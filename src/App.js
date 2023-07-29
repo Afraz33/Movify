@@ -118,7 +118,7 @@ function Results() {
 function Search() {
   return (
     <input
-      className=" text-xl text-white p-3 shadow-2xl bg-rose-500 focus:outline-none focus:border-2 focus:bg-slate-300 focus:text-black focus:ring rounded-2xl justify-self-center border-black border-1"
+      className=" text-xl text-black p-3 shadow-2xl bg-slate-200 focus:outline-none focus:border-2 focus:bg-slate-300 focus:text-2xl focus:ring rounded-2xl justify-self-center border-black border-1"
       placeholder="Search Movies...."
       type="text"
     />
