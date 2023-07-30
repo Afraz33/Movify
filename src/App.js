@@ -66,15 +66,18 @@ const tempWatchedData = [
     userRating: 9,
   },
 ];
+const KEY = "ad1a8d6";
 function App() {
   return (
-    <div className="relative bg-slate-600 h-content">
+    <div className="relative bg-slate-600 h-content ">
       <Navbar />
       <Main>
         <Box>
           <MovieList />
         </Box>
-        <Box />
+        <Box>
+          <MovieDetails />
+        </Box>
       </Main>
     </div>
   );
@@ -90,7 +93,7 @@ function Main({ children }) {
 
 function Navbar() {
   return (
-    <div className="mt-6 rounded-2xl h-20 w-[95%] m-auto   grid grid-cols-3 bg-rose-900 items-center shadow-4xl px-36">
+    <div className="mt-6 rounded-2xl h-20 w-[95%] m-auto   grid grid-cols-3 bg-rose-700 items-center shadow-4xl px-36">
       <Logo>Movify</Logo>
       <Search />
       <Results />
@@ -118,7 +121,7 @@ function Results() {
 function Search() {
   return (
     <input
-      className=" text-xl text-black p-3 shadow-2xl bg-slate-200 focus:outline-none focus:border-2 focus:bg-slate-300 focus:text-2xl focus:ring rounded-2xl justify-self-center border-black border-1"
+      className=" text-xl text-black p-3 shadow-2xl bg-slate-200 focus:outline-none focus:border-2 focus:bg-slate-300  focus:ring rounded-2xl justify-self-center border-black border-1"
       placeholder="Search Movies...."
       type="text"
     />
@@ -127,7 +130,9 @@ function Search() {
 
 function Box({ children }) {
   return (
-    <div className="w-1/3 h-4/5 bg-slate-400 mt-10 rounded-2xl">{children}</div>
+    <div className="w-[30%] h-4/5 bg-slate-400 mt-10 rounded-2xl">
+      {children}
+    </div>
   );
 }
 
@@ -135,8 +140,8 @@ function MovieList() {
   const [movies, setMovies] = useState(tempMovieData);
   return (
     <ul className="list-none overflow-auto h-full ">
-      {movies.map((movie) => (
-        <Movie movie={movie} />
+      {movies.map((movie, i) => (
+        <Movie movie={movie} key={i} />
       ))}
     </ul>
   );
@@ -144,7 +149,7 @@ function MovieList() {
 
 function Movie({ movie }) {
   return (
-    <li className="flex flex-row px-5 py-5 gap-4 hover:bg-rose-700 hover:cursor-pointer">
+    <li className="flex flex-row px-5 py-5 gap-4 hover:bg-rose-700 hover:cursor-pointer hover:text-white border-b-2 border-slate-500">
       <img
         className="w-24 h-24"
         src={movie.Poster}
@@ -157,5 +162,70 @@ function Movie({ movie }) {
     </li>
   );
 }
-
+function Loader() {
+  <p className="text-xl text-white self-center">Loading....</p>;
+}
+function MovieDetails() {
+  const [movie, setMovie] = useState({});
+  const {
+    Title: title,
+    Year: year,
+    Poster: poster,
+    Runtime: runtime,
+    imdbRating,
+    Plot: plot,
+    Released: released,
+    Actors: actors,
+    Director: director,
+    Genre: genre,
+  } = movie;
+  const [isLoading, setIsLoading] = useState(null);
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await fetch(
+        `https://www.omdbapi.com/?apikey=${KEY}&i=tt1375666`
+      );
+      const data = await res.json();
+      console.log(data);
+      setMovie(data);
+      setIsLoading(false);
+    };
+    fetchData();
+  });
+  return (
+    <>
+      {isLoading ? (
+        Loader
+      ) : (
+        <div className="bg-rose-700 text-white h-full ">
+          <header className=" flex flex-row gap-8 bg-rose-900 ">
+            <img
+              className="w-60 h-64"
+              src={poster}
+              alt={`Poster of ${movie} movie`}
+            />
+            <div className="flex flex-col py-10 gap-2">
+              <h2 className="text-5xl">{title}</h2>
+              <p className="text-start pt-5">
+                {released} &bull; {runtime}
+              </p>
+              <p className="text-start">{genre}</p>
+              <p className="text-start">
+                <span>⭐️</span>
+                {imdbRating} IMDb rating
+              </p>
+            </div>
+          </header>
+          <section className="flex flex-col gap-5 p-10 justify-start  ">
+            <p className="text-start">
+              <em>{plot}</em>
+            </p>
+            <p className="text-start ">Starring {actors}</p>
+            <p className="text-start font-bold ">Directed by {director}</p>
+          </section>
+        </div>
+      )}
+    </>
+  );
+}
 export default App;
