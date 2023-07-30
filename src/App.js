@@ -134,8 +134,8 @@ function Movie({ movie }) {
         alt={`${movie.Title} poster`}
       />
       <div className="flex flex-col">
-        <h3 className="text-dark  text-3xl">{movie.Title}</h3>
-        <h4 className="italic text-2xl">({movie.Year})</h4>
+        <h3 className="text-dark  text-2xl">{movie.Title}</h3>
+        <h4 className="italic text-xl">({movie.Year})</h4>
       </div>
     </li>
   );
@@ -176,29 +176,29 @@ function MovieDetails() {
         Loader
       ) : (
         <div className="bg-rose-700 text-white h-full ">
-          <header className=" flex flex-row gap-8 bg-rose-900 ">
+          <header className=" flex flex-row gap-4 bg-rose-900 ">
             <img
               className="w-60 h-64"
               src={poster}
               alt={`Poster of ${movie} movie`}
             />
             <div className="flex flex-col py-10 gap-2">
-              <h2 className="text-5xl">{title}</h2>
-              <p className="text-start pt-5">
+              <h2 className="text-3xl text-start">{title}</h2>
+              <p className="text-sm text-start pt-5">
                 {released} &bull; {runtime}
               </p>
-              <p className="text-start">{genre}</p>
-              <p className="text-start">
+              <p className="text-sm text-start">{genre}</p>
+              <p className="text-sm text-start">
                 <span>⭐️</span>
                 {imdbRating} IMDb rating
               </p>
             </div>
           </header>
           <section className="flex flex-col gap-5 p-10 justify-start  ">
-            <p className="text-start">
+            <p className="text-sm text-start">
               <em>{plot}</em>
             </p>
-            <p className="text-start ">Starring {actors}</p>
+            <p className="text-sm text-start ">Starring {actors}</p>
             <p className="text-start font-bold ">Directed by {director}</p>
           </section>
         </div>
