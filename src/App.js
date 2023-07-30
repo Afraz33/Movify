@@ -141,7 +141,7 @@ function Movie({ movie }) {
   );
 }
 function Loader() {
-  <p className="text-xl text-white self-center">Loading....</p>;
+  <p className="text-xl text-white self-center">Loading Movies.....</p>;
 }
 function MovieDetails() {
   const [movie, setMovie] = useState({});
