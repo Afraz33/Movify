@@ -71,7 +71,7 @@ function Main({ children }) {
 
 function Navbar() {
   return (
-    <div className="mt-6 rounded-2xl h-20 w-[95%] m-auto   grid grid-cols-3 bg-rose-700 items-center shadow-4xl px-36">
+    <div className="mt-6 rounded-2xl h-20 w-[95%] m-auto   grid grid-cols-3 bg-rose-700 items-center shadow-4xl px-16">
       <Logo>Movify</Logo>
       <Search />
       <Results />
@@ -82,24 +82,20 @@ function Navbar() {
 function Logo({ children }) {
   return (
     <div className="items-center logo-container flex flex-row ">
-      <span className="justify-self-end text-5xl mb-5"> &#x1F4F7;</span>
-      <span className="text-4xl text-white font-semibold italic">
+      <span className="justify-self-end text-4xl mb-5"> &#x1F4F7;</span>
+      <span className="text-2xl text-white font-semibold italic">
         {children}
       </span>
     </div>
   );
 }
 function Results() {
-  return (
-    <p className="text-xl text-white justify-self-end font-bold">
-      3 Results Found
-    </p>
-  );
+  return <p className="text-lg text-white justify-self-end">3 Results Found</p>;
 }
 function Search() {
   return (
     <input
-      className=" text-xl text-black p-3 shadow-2xl bg-slate-200 focus:outline-none focus:border-2 focus:bg-slate-300  focus:ring rounded-2xl justify-self-center border-black border-1"
+      className="w-72 text-sm text-black p-3 shadow-2xl bg-slate-200 focus:outline-none focus:border-2 focus:bg-slate-300  focus:ring rounded-2xl justify-self-center border-black border-1"
       placeholder="Search Movies...."
       type="text"
     />
