@@ -85,7 +85,7 @@ function App() {
 
 function Main({ children }) {
   return (
-    <div className=" bg-slate-600 pt-4 text-center h-screen w-screen flex flex-row gap-14 justify-center">
+    <div className=" bg-slate-600 pt-4 text-center h-screen w-screen flex flex-row gap-14 justify-center ">
       {children}
     </div>
   );
@@ -130,7 +130,7 @@ function Search() {
 
 function Box({ children }) {
   return (
-    <div className="w-[30%] h-4/5 bg-slate-400 mt-10 rounded-2xl">
+    <div className="w-[30%] h-4/5 bg-slate-400 mt-10 rounded-2xl ">
       {children}
     </div>
   );
