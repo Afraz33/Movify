@@ -1,4 +1,4 @@
-import { Children, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 const tempMovieData = [
   {
     imdbID: "tt1375666",
@@ -44,28 +44,6 @@ const tempMovieData = [
   },
 ];
 
-const tempWatchedData = [
-  {
-    imdbID: "tt1375666",
-    Title: "Inception",
-    Year: "2010",
-    Poster:
-      "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg",
-    runtime: 148,
-    imdbRating: 8.8,
-    userRating: 10,
-  },
-  {
-    imdbID: "tt0088763",
-    Title: "Back to the Future",
-    Year: "1985",
-    Poster:
-      "https://m.media-amazon.com/images/M/MV5BZmU0M2Y1OGUtZjIxNi00ZjBkLTg1MjgtOWIyNThiZWIwYjRiXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg",
-    runtime: 116,
-    imdbRating: 8.5,
-    userRating: 9,
-  },
-];
 const KEY = "ad1a8d6";
 function App() {
   return (
@@ -137,7 +115,7 @@ function Box({ children }) {
 }
 
 function MovieList() {
-  const [movies, setMovies] = useState(tempMovieData);
+  const [movies] = useState(tempMovieData);
   return (
     <ul className="list-none overflow-auto h-full ">
       {movies.map((movie, i) => (
@@ -169,7 +147,7 @@ function MovieDetails() {
   const [movie, setMovie] = useState({});
   const {
     Title: title,
-    Year: year,
+    // Year: year,
     Poster: poster,
     Runtime: runtime,
     imdbRating,
