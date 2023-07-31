@@ -29,30 +29,61 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState();
-
+  const [error, setError] = useState("");
+  const [found, setFound] = useState(true);
   function handleSelectMovie(id) {
     setSelectedId((selectedId) => (id === selectedId ? null : id));
   }
 
-  useEffect(() => {
-    async function getMovies() {
-      setIsLoading(true);
-      if (query.length >= 3) {
-        const res = await fetch(
-          `https://www.omdbapi.com/?apikey=${KEY}&s=${query}`
-        );
-        const data = await res.json();
-        setMovies(data.Search);
-        setIsLoading(false);
-      } else {
-        setIsLoading(false);
-        setMovies(tempMovieData);
-      }
-    }
-    getMovies();
+  useEffect(
+    function () {
+      const controller = new AbortController();
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query]);
+      async function getMovies() {
+        try {
+          setIsLoading(true);
+          setError("");
+
+          const res = await fetch(
+            `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`,
+            { signal: controller.signal }
+          );
+
+          if (!res.ok)
+            throw new Error("Something went wrong with fetching movies");
+
+          const data = await res.json();
+
+          if (data.Response === "False") {
+            setMovies([]);
+            setError("Movie Not Found");
+          }
+
+          setMovies(data.Search);
+        } catch (err) {
+          if (err.name !== "AbortError") {
+            console.log(err.message);
+            setError(err.message);
+          }
+        } finally {
+          setIsLoading(false);
+        }
+      }
+
+      if (query.length < 3) {
+        setMovies([]);
+        setError("");
+        return;
+      }
+
+      getMovies();
+
+      return function () {
+        controller.abort();
+      };
+    },
+    [query]
+  );
 
   return (
     <div className="relative bg-slate-600 h-content ">
@@ -63,11 +94,11 @@ function App() {
       </Navbar>
       <Main>
         <Box>
-          {isLoading ? (
-            <Loader />
-          ) : (
+          {isLoading && <Loader />}
+          {!isLoading && !error && (
             <MovieList onSelectMovie={handleSelectMovie} movies={movies} />
           )}
+          {!isLoading && error && <Error message={error} />}
         </Box>
         <Box>
           {selectedId ? <MovieDetails selectedId={selectedId} /> : <></>}
@@ -156,8 +187,22 @@ function Movie({ movie, onSelectMovie }) {
     </li>
   );
 }
+
+function Error({ message }) {
+  return (
+    <p className="text-center text-xl text-red-900 mt-20 font-bold">
+      <span className="text-2xl mr-2">⛔️</span>
+      {message}
+    </p>
+  );
+}
+
 function Loader() {
-  return <p className="text-2xl text-rose-900 mt-10">Loading.....</p>;
+  return (
+    <div className="flex justify-center items-center mt-40">
+      <div className="animate-spin rounded-full h-14 w-14 border-t-4 border-rose-700"></div>
+    </div>
+  );
 }
 function MovieDetails({ selectedId }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -206,14 +251,14 @@ function MovieDetails({ selectedId }) {
       {isLoading ? (
         <Loader />
       ) : (
-        <div className="bg-rose-700 text-white h-full ">
+        <div className="bg-rose-700 text-white h-full overflow-auto">
           <header className=" flex flex-row gap-4 bg-rose-900 ">
             <img
-              className="w-60 h-64"
+              className="w-40 h-full"
               src={poster}
               alt={`Poster of ${title} movie`}
             />
-            <div className="flex flex-col py-10 gap-2">
+            <div className="flex flex-col py-4 gap-2">
               <h2 className="text-2xl text-start">{title}</h2>
               <p className="text-sm text-start pt-5">
                 {released} &bull; {runtime}
