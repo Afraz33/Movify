@@ -12,6 +12,10 @@ function App() {
     setSelectedId((selectedId) => (id === selectedId ? null : id));
   }
 
+  function handleCloseMovie() {
+    setSelectedId(null);
+  }
+
   useEffect(
     function () {
       const controller = new AbortController();
@@ -78,7 +82,12 @@ function App() {
           {!isLoading && error && <Error message={error} />}
         </Box>
         <Box>
-          {selectedId ? <MovieDetails selectedId={selectedId} /> : <></>}
+          {selectedId && (
+            <MovieDetails
+              selectedId={selectedId}
+              onCloseMovie={handleCloseMovie}
+            />
+          )}
         </Box>
       </Main>
     </div>
@@ -181,7 +190,7 @@ function Loader() {
     </div>
   );
 }
-function MovieDetails({ selectedId }) {
+function MovieDetails({ selectedId, onCloseMovie }) {
   const [isLoading, setIsLoading] = useState(true);
   const [movie, setMovie] = useState({});
   const {
@@ -196,7 +205,22 @@ function MovieDetails({ selectedId }) {
     Director: director,
     Genre: genre,
   } = movie;
+  useEffect(
+    function () {
+      function callback(e) {
+        if (e.code === "Space" || e.code === "ControlLeft") {
+          onCloseMovie();
+          console.log("Afraz");
+        }
+      }
 
+      document.addEventListener("keydown", callback);
+      return function () {
+        document.removeEventListener("keydown", callback);
+      };
+    },
+    [onCloseMovie]
+  );
   useEffect(() => {
     const fetchData = async () => {
       const res = await fetch(
@@ -207,6 +231,7 @@ function MovieDetails({ selectedId }) {
       setMovie(data);
       setIsLoading(false);
     };
+
     fetchData();
   }, [selectedId]);
 
@@ -223,13 +248,21 @@ function MovieDetails({ selectedId }) {
     },
     [title]
   );
+
   return (
     <>
       {isLoading ? (
         <Loader />
       ) : (
         <div className="bg-rose-700 text-white h-full overflow-auto">
-          <header className=" flex flex-row gap-4 bg-rose-900 ">
+          <header className=" flex flex-row gap-4 bg-rose-900 relative">
+            <button
+              className="text-black bg-white text-2xl w-10 rounded-xl 
+               hover:text-white hover:bg-black hover:cursor-pointer absolute top-3 left-4"
+              onClick={onCloseMovie}
+            >
+              &larr;
+            </button>
             <img
               className="w-40 h-full"
               src={poster}
