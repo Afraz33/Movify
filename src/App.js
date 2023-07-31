@@ -7,7 +7,8 @@ function App() {
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState();
   const [error, setError] = useState("");
-
+  const [isOpen1, setIsOpen1] = useState(true);
+  const [isOpen2, setIsOpen2] = useState(true);
   function handleSelectMovie(id) {
     setSelectedId((selectedId) => (id === selectedId ? null : id));
   }
@@ -38,6 +39,7 @@ function App() {
           if (data.Response === "False") {
             setMovies([]);
             setError("Movie Not Found");
+            return;
           }
 
           setMovies(data.Search);
@@ -71,17 +73,31 @@ function App() {
       <Navbar>
         <Logo>Movify</Logo>
         <Search query={query} setQuery={setQuery} />
-        <Results />
+        <Results movies={movies} />
       </Navbar>
       <Main>
-        <Box>
+        <Box
+          isOpen={isOpen1}
+          Button={
+            <Button setIsOpen={setIsOpen1}>
+              {isOpen1 ? "\u2212" : "\u002B"}
+            </Button>
+          }
+        >
           {isLoading && <Loader />}
           {!isLoading && !error && (
             <MovieList onSelectMovie={handleSelectMovie} movies={movies} />
           )}
           {!isLoading && error && <Error message={error} />}
         </Box>
-        <Box>
+        <Box
+          isOpen={isOpen2}
+          Button={
+            <Button setIsOpen={setIsOpen2}>
+              {isOpen2 ? "\u2212" : "\u002B"}
+            </Button>
+          }
+        >
           {selectedId && (
             <MovieDetails
               selectedId={selectedId}
@@ -120,8 +136,12 @@ function Logo({ children }) {
     </div>
   );
 }
-function Results() {
-  return <p className="text-lg text-white justify-self-end">3 Results Found</p>;
+function Results({ movies }) {
+  return (
+    <p className="text-lg text-white justify-self-end">
+      {movies.length} Results Found
+    </p>
+  );
 }
 function Search({ query, setQuery }) {
   return (
@@ -135,17 +155,31 @@ function Search({ query, setQuery }) {
   );
 }
 
-function Box({ children }) {
+function Box({ children, Button, isOpen }) {
   return (
-    <div className="w-[30%] h-4/5 bg-slate-400 mt-10 rounded-2xl ">
-      {children}
+    <div className="w-[30%] h-4/5 bg-slate-400 mt-10 rounded-2xl relative">
+      {Button}
+      {isOpen && children}
     </div>
   );
 }
 
+function Button({ children, setIsOpen }) {
+  return (
+    <>
+      <button
+        className="hover:text-black hover:bg-white text-2xl w-8 rounded-xl 
+               text-white bg-black hover:cursor-pointer absolute top-3 right-4 z-50"
+        onClick={() => setIsOpen((x) => !x)}
+      >
+        {children}
+      </button>
+    </>
+  );
+}
 function MovieList({ onSelectMovie, movies }) {
   return (
-    <ul className="list-none overflow-auto h-full ">
+    <ul className="list-none overflow-auto h-full relative ">
       {movies?.map((movie, i) => (
         <Movie movie={movie} key={i} onSelectMovie={onSelectMovie} />
       ))}
@@ -258,7 +292,7 @@ function MovieDetails({ selectedId, onCloseMovie }) {
           <header className=" flex flex-row gap-4 bg-rose-900 relative">
             <button
               className="text-black bg-white text-2xl w-10 rounded-xl 
-               hover:text-white hover:bg-black hover:cursor-pointer absolute top-3 left-4"
+               hover:text-white hover:bg-rose-900 hover:cursor-pointer absolute top-3 left-4"
               onClick={onCloseMovie}
             >
               &larr;
