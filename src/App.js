@@ -39,7 +39,7 @@ function App() {
       setIsLoading(true);
       if (query.length >= 3) {
         const res = await fetch(
-          `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`
+          `https://www.omdbapi.com/?apikey=${KEY}&s=${query}`
         );
         const data = await res.json();
         setMovies(data.Search);
