@@ -2,12 +2,15 @@ import { useEffect, useState } from "react";
 
 const KEY = "ad1a8d6";
 function App() {
+  const [bookmarkedMovies, setBookmarkedMovies] = useState([]);
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState();
   const [error, setError] = useState("");
-
+  function handleAddBookmarked(newBookmarkMovie) {
+    setBookmarkedMovies((bookmarked) => [...bookmarked, newBookmarkMovie]);
+  }
   function handleSelectMovie(id) {
     setSelectedId((selectedId) => (id === selectedId ? null : id));
   }
@@ -44,7 +47,6 @@ function App() {
           setMovies(data.Search);
         } catch (err) {
           if (err.name !== "AbortError") {
-            console.log(err.message);
             setError(err.message);
           }
         } finally {
@@ -85,8 +87,11 @@ function App() {
         <Box>
           {selectedId && (
             <MovieDetails
+              handleAddBookmarked={handleAddBookmarked}
               selectedId={selectedId}
               onCloseMovie={handleCloseMovie}
+              bookmarkedMovies={bookmarkedMovies}
+              key={selectedId}
             />
           )}
         </Box>
@@ -205,12 +210,22 @@ function Loader() {
     </div>
   );
 }
-function MovieDetails({ selectedId, onCloseMovie }) {
+function MovieDetails({
+  selectedId,
+  onCloseMovie,
+  handleAddBookmarked,
+  bookmarkedMovies,
+}) {
   const [isLoading, setIsLoading] = useState(true);
   const [movie, setMovie] = useState({});
+  const [recentBookmark, setRecentBookmark] = useState(false);
+  const isWatched = bookmarkedMovies
+    .map((movie) => movie.imdbID)
+    .includes(selectedId);
+  console.log(bookmarkedMovies);
   const {
     Title: title,
-    // Year: year,
+    Year: year,
     Poster: poster,
     Runtime: runtime,
     imdbRating,
@@ -220,12 +235,23 @@ function MovieDetails({ selectedId, onCloseMovie }) {
     Director: director,
     Genre: genre,
   } = movie;
+  function handleAdd() {
+    const newWatchedMovie = {
+      imdbID: selectedId,
+      title,
+      year,
+      poster,
+      imdbRating: Number(imdbRating),
+      runtime: Number(runtime.split(" ").at(0)),
+    };
+    handleAddBookmarked(newWatchedMovie);
+    setRecentBookmark((x) => !x);
+  }
   useEffect(
     function () {
       function callback(e) {
-        if (e.code === "Space" || e.code === "ControlLeft") {
+        if (e.code === "Space") {
           onCloseMovie();
-          console.log("Afraz");
         }
       }
 
@@ -242,7 +268,7 @@ function MovieDetails({ selectedId, onCloseMovie }) {
         `https://www.omdbapi.com/?apikey=${KEY}&i=${selectedId}`
       );
       const data = await res.json();
-      console.log(data);
+
       setMovie(data);
       setIsLoading(false);
     };
@@ -258,7 +284,6 @@ function MovieDetails({ selectedId, onCloseMovie }) {
 
       return function () {
         document.title = "Movify";
-        // console.log(`Clean up effect for movie ${title}`);
       };
     },
     [title]
@@ -296,6 +321,30 @@ function MovieDetails({ selectedId, onCloseMovie }) {
             </div>
           </header>
           <section className="flex flex-col gap-5 p-10 justify-start  ">
+            <div className="bg-rose-900 h-content py-4 ">
+              {!recentBookmark && isWatched && (
+                <div className="flex flex-col gap-3 items-center">
+                  <p>You already bookmarked this movie.</p>
+                </div>
+              )}
+              {!recentBookmark && !isWatched && (
+                <div className="flex flex-col gap-3 items-center">
+                  <p>Want to watch this movie Later?</p>
+                  <button
+                    onClick={handleAdd}
+                    className="hover:text-black hover:bg-white text-sm px-4 text-center rounded-xl 
+               text-white bg-black hover:cursor-pointer py-1 w-52 border-orange-200 border-2"
+                  >
+                    Add to Bookmarks
+                  </button>
+                </div>
+              )}
+              {recentBookmark && (
+                <div className="flex flex-col gap-3 items-center ">
+                  <p className="text-golden-900">Successfully bookmarked!</p>
+                </div>
+              )}
+            </div>
             <p className="text-sm text-start">
               <em>{plot}</em>
             </p>
@@ -307,4 +356,5 @@ function MovieDetails({ selectedId, onCloseMovie }) {
     </>
   );
 }
+
 export default App;
