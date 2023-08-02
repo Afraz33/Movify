@@ -2,15 +2,27 @@ import { useEffect, useState } from "react";
 
 const KEY = "ad1a8d6";
 function App() {
-  const [bookmarkedMovies, setBookmarkedMovies] = useState([]);
+  const [bookmarkedMovies, setBookmarkedMovies] = useState(
+    JSON.parse(localStorage.getItem("bookmarked"))
+  );
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState();
   const [error, setError] = useState("");
+
   function handleAddBookmarked(newBookmarkMovie) {
     setBookmarkedMovies((bookmarked) => [...bookmarked, newBookmarkMovie]);
   }
+
+  function handleRemoveBookmark(movieId) {
+    setBookmarkedMovies(
+      bookmarkedMovies.filter(
+        (bookmarkedMovie) => bookmarkedMovie.imdbID !== movieId
+      )
+    );
+  }
+
   function handleSelectMovie(id) {
     setSelectedId((selectedId) => (id === selectedId ? null : id));
   }
@@ -18,6 +30,12 @@ function App() {
   function handleCloseMovie() {
     setSelectedId(null);
   }
+  useEffect(
+    function () {
+      localStorage.setItem("bookmarked", JSON.stringify(bookmarkedMovies));
+    },
+    [bookmarkedMovies]
+  );
 
   useEffect(
     function () {
@@ -85,13 +103,18 @@ function App() {
           {!isLoading && error && <Error message={error} />}
         </Box>
         <Box>
-          {selectedId && (
+          {selectedId ? (
             <MovieDetails
               handleAddBookmarked={handleAddBookmarked}
               selectedId={selectedId}
               onCloseMovie={handleCloseMovie}
               bookmarkedMovies={bookmarkedMovies}
               key={selectedId}
+            />
+          ) : (
+            <BookMarkedMovieList
+              bookmarkedMovies={bookmarkedMovies}
+              handleRemoveBookmark={handleRemoveBookmark}
             />
           )}
         </Box>
@@ -148,7 +171,7 @@ function Search({ query, setQuery }) {
 function Box({ children }) {
   const [isOpen, setIsOpen] = useState(true);
   return (
-    <div className="w-[30%] h-4/5 bg-slate-400 mt-10 rounded-2xl relative">
+    <div className="w-[30%] h-4/5 bg-slate-400 mt-10 rounded-2xl relative ">
       <button
         className="hover:text-black hover:bg-white text-2xl w-10 rounded-xl 
                text-white bg-black hover:cursor-pointer absolute top-3 right-6 z-50"
@@ -355,6 +378,66 @@ function MovieDetails({
       )}
     </>
   );
+}
+
+function BookMarkedMovieList({ bookmarkedMovies, handleRemoveBookmark }) {
+  return (
+    <div className="bg-rose-800 text-white h-full overflow-auto">
+      <div className="bg-rose-600 text-start h-content pt-2 pb-4 rounded-2xl shadow-md  shadow-neutral-200 mb-3">
+        <h3 className=" pt-2 pb-1 text-center text-xl ">
+          Your Bookmarked Movies List!
+        </h3>
+        <h4 className="pl-24">#️⃣ {bookmarkedMovies.length} movies</h4>
+      </div>
+      <ul className="list-none  h-content relative bg-rose-700 ">
+        {bookmarkedMovies?.map((movie, i) => (
+          <BookMarkedMovie
+            movie={movie}
+            key={movie.imdbID}
+            handleRemoveBookmark={handleRemoveBookmark}
+          />
+        ))}
+      </ul>
+    </div>
+  );
+
+  function BookMarkedMovie({ movie }) {
+    return (
+      <li className="flex flex-row px-2 py-2 gap-4 bg-rose-800 :cursor-pointer text-white border-b-2 border-slate-500">
+        <img
+          className="w-20 h-20"
+          src={movie.poster}
+          alt={`${movie.title} poster`}
+        />
+        <div className="relative w-full">
+          <h3 className="text-dark text-xl text-start ">{movie.title}</h3>
+          <div className="flex flex-row py-3 gap-4 ">
+            <p>
+              <span>⭐️</span>
+              <span>{movie.imdbRating}</span>
+            </p>
+            <p>
+              <span>&#x1F4C5;</span>
+              <span>{movie.year}</span>
+            </p>
+            <p>
+              <span>⏳</span>
+              <span>{movie.runtime ? `${movie.runtime} min` : "N/A"}</span>
+            </p>
+          </div>
+          <button
+            className="hover:text-black hover:bg-white text-sm w-7  rounded-xl 
+               text-white bg-gray-900 hover:cursor-pointer text-center absolute right-20 bottom-4"
+            onClick={() => {
+              handleRemoveBookmark(movie.imdbID);
+            }}
+          >
+            {"\u2212"}
+          </button>
+        </div>
+      </li>
+    );
+  }
 }
 
 export default App;
