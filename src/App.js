@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 const KEY = "ad1a8d6";
 function App() {
   const [bookmarkedMovies, setBookmarkedMovies] = useState(function () {
-    return JSON.parse(localStorage.getItem("bookmarked"));
+    const storage = localStorage.getItem("bookmarked");
+    return JSON.parse(storage);
   });
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
