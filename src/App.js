@@ -246,7 +246,7 @@ function MovieDetails({
   const isWatched = bookmarkedMovies
     .map((movie) => movie.imdbID)
     .includes(selectedId);
-  console.log(bookmarkedMovies);
+
   const {
     Title: title,
     Year: year,
