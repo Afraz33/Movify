@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 
 const KEY = "ad1a8d6";
 function App() {
-  const [bookmarkedMovies, setBookmarkedMovies] = useState([]);
+  const [bookmarkedMovies, setBookmarkedMovies] = useState(function () {
+    const storage = localStorage.getItem("bookmarked");
+    const parsedData = JSON.parse(storage);
+    return Array.isArray(parsedData) ? parsedData : [];
+  });
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [query, setQuery] = useState("");
