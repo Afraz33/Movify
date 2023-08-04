@@ -2,7 +2,10 @@ import { useEffect, useState } from "react";
 
 const KEY = "ad1a8d6";
 function App() {
-  const [bookmarkedMovies, setBookmarkedMovies] = useState();
+  const [bookmarkedMovies, setBookmarkedMovies] = useState(function () {
+    const storage = localStorage.getItem("bookmarked");
+    return JSON.parse(storage);
+  });
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [query, setQuery] = useState("");
@@ -385,7 +388,9 @@ function BookMarkedMovieList({ bookmarkedMovies, handleRemoveBookmark }) {
         <h3 className=" pt-2 pb-1 text-center text-xl ">
           Your Bookmarked Movies List!
         </h3>
-        <h4 className="pl-24">#️⃣ {bookmarkedMovies.length} movies</h4>
+        <h4 className="pl-24">
+          #️⃣ {bookmarkedMovies ? bookmarkedMovies.length : "0"} movies
+        </h4>
       </div>
       <ul className="list-none  h-content relative bg-rose-700 ">
         {bookmarkedMovies?.map((movie, i) => (
