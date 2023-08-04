@@ -243,9 +243,9 @@ function MovieDetails({
   const [isLoading, setIsLoading] = useState(true);
   const [movie, setMovie] = useState({});
   const [recentBookmark, setRecentBookmark] = useState(false);
-  const isWatched = bookmarkedMovies
-    .map((movie) => movie.imdbID)
-    .includes(selectedId);
+  const isWatched =
+    Array.isArray(bookmarkedMovies) &&
+    bookmarkedMovies.map((movie) => movie?.imdbID).includes(selectedId);
 
   const {
     Title: title,
