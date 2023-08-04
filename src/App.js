@@ -2,10 +2,7 @@ import { useEffect, useState } from "react";
 
 const KEY = "ad1a8d6";
 function App() {
-  const [bookmarkedMovies, setBookmarkedMovies] = useState(function () {
-    const storage = localStorage.getItem("bookmarked");
-    return JSON.parse(storage);
-  });
+  const [bookmarkedMovies, setBookmarkedMovies] = useState([]);
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [query, setQuery] = useState("");
@@ -13,6 +10,7 @@ function App() {
   const [error, setError] = useState("");
 
   function handleAddBookmarked(newBookmarkMovie) {
+    console.log(bookmarkedMovies);
     setBookmarkedMovies((bookmarked) => [...bookmarked, newBookmarkMovie]);
   }
 
