@@ -4,7 +4,8 @@ const KEY = "ad1a8d6";
 function App() {
   const [bookmarkedMovies, setBookmarkedMovies] = useState(function () {
     const storage = localStorage.getItem("bookmarked");
-    return JSON.parse(storage);
+    const parsedData = JSON.parse(storage);
+    return Array.isArray(parsedData) ? parsedData : [];
   });
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -13,6 +14,7 @@ function App() {
   const [error, setError] = useState("");
 
   function handleAddBookmarked(newBookmarkMovie) {
+    console.log(bookmarkedMovies);
     setBookmarkedMovies((bookmarked) => [...bookmarked, newBookmarkMovie]);
   }
 
@@ -243,10 +245,10 @@ function MovieDetails({
   const [isLoading, setIsLoading] = useState(true);
   const [movie, setMovie] = useState({});
   const [recentBookmark, setRecentBookmark] = useState(false);
-  const isWatched = bookmarkedMovies
-    .map((movie) => movie.imdbID)
-    .includes(selectedId);
-  console.log(bookmarkedMovies);
+  const isWatched =
+    Array.isArray(bookmarkedMovies) &&
+    bookmarkedMovies.map((movie) => movie?.imdbID).includes(selectedId);
+
   const {
     Title: title,
     Year: year,
