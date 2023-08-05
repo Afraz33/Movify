@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-
+import { useLocalStorage } from "./useLocalStorage";
 const KEY = "ad1a8d6";
 function App() {
-  const [bookmarkedMovies, setBookmarkedMovies] = useState(function () {
-    const storage = localStorage.getItem("bookmarked");
-    const parsedData = JSON.parse(storage);
-    return Array.isArray(parsedData) ? parsedData : [];
-  });
+  const [bookmarkedMovies, setBookmarkedMovies] = useLocalStorage(
+    [],
+    "bookmarked"
+  );
+
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [query, setQuery] = useState("");
@@ -245,6 +245,7 @@ function MovieDetails({
   const [isLoading, setIsLoading] = useState(true);
   const [movie, setMovie] = useState({});
   const [recentBookmark, setRecentBookmark] = useState(false);
+
   const isWatched =
     Array.isArray(bookmarkedMovies) &&
     bookmarkedMovies.map((movie) => movie?.imdbID).includes(selectedId);
@@ -261,17 +262,18 @@ function MovieDetails({
     Director: director,
     Genre: genre,
   } = movie;
+
   function handleAdd() {
-    const newWatchedMovie = {
+    const watchedMovie = {
       imdbID: selectedId,
-      title,
-      year,
-      poster,
+      title: title,
+      year: year,
+      poster: poster,
       imdbRating: Number(imdbRating),
-      runtime: Number(runtime.split(" ").at(0)),
+      runtime: Number(runtime.split(" ")[0]),
     };
-    handleAddBookmarked(newWatchedMovie);
-    setRecentBookmark((x) => !x);
+    handleAddBookmarked(watchedMovie);
+    setRecentBookmark((value) => !value);
   }
   useEffect(
     function () {
@@ -296,6 +298,7 @@ function MovieDetails({
       const data = await res.json();
 
       setMovie(data);
+
       setIsLoading(false);
     };
 
