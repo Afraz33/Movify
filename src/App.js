@@ -246,10 +246,9 @@ function MovieDetails({
   const [movie, setMovie] = useState({});
   const [recentBookmark, setRecentBookmark] = useState(false);
 
-  const isWatched =
-    Array.isArray(bookmarkedMovies) &&
-    bookmarkedMovies.map((movie) => movie?.imdbID).includes(selectedId);
-
+  const isBookmarked = bookmarkedMovies.find(
+    (movie) => movie.imdbID === selectedId
+  );
   const {
     Title: title,
     Year: year,
@@ -351,12 +350,12 @@ function MovieDetails({
           </header>
           <section className="flex flex-col gap-5 p-10 justify-start  ">
             <div className="bg-rose-900 h-content py-4 ">
-              {!recentBookmark && isWatched && (
+              {!recentBookmark && isBookmarked && (
                 <div className="flex flex-col gap-3 items-center">
                   <p>You already bookmarked this movie.</p>
                 </div>
               )}
-              {!recentBookmark && !isWatched && (
+              {!recentBookmark && !isBookmarked && (
                 <div className="flex flex-col gap-3 items-center">
                   <p>Want to watch this movie Later?</p>
                   <button
