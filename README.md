@@ -22,14 +22,14 @@ Movify is a real-time movie searching app powered by the OMDb API. It allows use
 
 1. Search for movies using the search bar. ![image](https://github.com/Afraz33/Movify/assets/95544278/491d79a4-f65b-4308-a9f8-80ff3bc7c7fc)
 
-2. Click on a movie to view its description and IMDb rating.
-3. Bookmark movies by clicking on the bookmark icon.
-4. View bookmarked movies later in the bookmarks section.
-5. Undo bookmarks if needed.
+2. Click on a movie to view its description and IMDb rating. ![image](https://github.com/Afraz33/Movify/assets/95544278/d5863cfb-befb-4aaf-aea6-bd8af4add45c)
 
-## Contributing
+3. Bookmark movies by clicking on the bookmark icon. ![image](https://github.com/Afraz33/Movify/assets/95544278/bf26b539-f95c-4f06-985e-ab0b086bde87)
 
-Contributions are welcome! Please follow the Gitflow workflow and submit pull requests for any enhancements or bug fixes.
+4. View bookmarked movies later in the bookmarks section. ![image](https://github.com/Afraz33/Movify/assets/95544278/7bff979f-e20b-4f0b-bd23-bc08882c6306)
+
+5. Undo bookmarks if needed. ![image](https://github.com/Afraz33/Movify/assets/95544278/66ecf19a-976c-4f61-bb25-453f89a042d1)
+
 
 ## Deployment
 
